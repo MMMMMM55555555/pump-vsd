@@ -10,7 +10,6 @@ st.set_page_config(page_title="Klong Prem VSD & Parallel Performance", layout="w
 st.title("BMA/Klong Prem Tunnel Drainage (Model: 2600VLZGM, 15CMS)")
 st.markdown("**VSD PERFORMANCE, PARALLEL PUMP OPERATION & SYSTEM CURVES**")
 
-# Input columns at the top of the page
 col_pumps, col_Q, col_H = st.columns([1, 1.5, 1.5])
 with col_pumps:
     num_pumps = st.radio('⚙️ Operating Pumps:', options=[1, 2, 3, 4], index=0, horizontal=True)
@@ -46,12 +45,12 @@ p_npsh = np.poly1d(np.polyfit(Q_npsh_raw, H_npsh_raw, 3))
 Q_npsh = np.linspace(0, 24, 100)
 H_npsh = p_npsh(Q_npsh)
 
-# THE 4 SYSTEM RESISTANCE CURVES 
+# THE 4 SYSTEM RESISTANCE CURVES (Calibrated to true scale)
 system_curves = {
     'Circulation (Chaopaya -1.5m to Weir +4.5m)': (6.0, 0.003333, 'royalblue', '-'),
     'Drainage DWL (Bang Bua -1.0m to Chaopaya +2.2m)': (3.20, 0.003333, 'black', '-'),
     'Drainage HWL (Bang Bua 0.0m to Chaopaya +2.2m)': (2.20, 0.003333, 'firebrick', '-'),
-    'Drainage LWL (Bang Bua -2.0m to Weir 0.0m)': (2.00, 0.006666, 'seagreen', '-')
+    'Drainage LWL (Bang Bua -2.0m to Weir 0.0m)': (2.00, 0.004000, 'seagreen', '-') # Fixed friction coefficient
 }
 Q_sys = np.linspace(0, 120, 200)
 
@@ -60,12 +59,10 @@ Q_sys = np.linspace(0, 120, 200)
 # ==========================================
 fig, ax1 = plt.subplots(figsize=(15, 9))
 
-# Force backgrounds to solid white to prevent Streamlit Dark Mode issues
 fig.patch.set_facecolor('white')
 ax1.set_facecolor('white')
 
 ax2 = ax1.twinx()
-# Explicitly force the Efficiency labels to stay on the right side
 ax2.yaxis.tick_right()
 ax2.yaxis.set_label_position("right")
 
@@ -115,7 +112,6 @@ for i, speed_ratio in enumerate(speeds):
     H_start = H_safe[0]
     ax1.plot(Q_start, H_start, marker='o', color=colors[i], markersize=6)
     
-    # Text shifted left to avoid axis crossover
     label_text = f"{int(speed_ratio * 100)}%\nMax: {true_max_head:.2f} m"
     ax1.text(Q_start + (0.6 * num_pumps), H_start, label_text, color=colors[i], fontsize=10, 
              fontweight='bold', ha='left', va='center', path_effects=halo)
@@ -159,5 +155,4 @@ ax1.legend(lines_1 + lines_2, labels_1 + labels_2, loc='upper right', fontsize=9
 
 plt.tight_layout()
 
-# Render the plot in the Streamlit app
 st.pyplot(fig)
