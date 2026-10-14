@@ -10,7 +10,7 @@ st.set_page_config(page_title="TEAM Pump QA/QC Assistant", layout="wide")
 st.title("AI-Integrated Pump Spec Validator")
 
 # Initialize OpenAI Client (Replace with your actual key or use st.secrets)
-os.environ["OPENAI_API_KEY"] = "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"
+
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 # ==========================================
